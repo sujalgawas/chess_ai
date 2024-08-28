@@ -616,7 +616,7 @@
                         }
                     }
                     //castle black
-                    if(piece == 'king' && first_color == 'b' && first_co == "7,4"){
+                    if(!new_castle_black && piece == 'king' && first_color == 'b' && first_co == "7,4"){
                         let [x,y] = first_co.split(',').map(Number);
                         const currentButton = document.querySelector(`button[class$="${"7,5"}"]`);
                         const currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
@@ -625,13 +625,14 @@
                             currentButton_1.innerHTML = '<div style="height: 25px; width: 25px; opacity: 0.75; background-color: #bbb; border-radius: 50%; display: inline-block;"></div>';
                         }
                         castle_black = true;
+                        new_castle_black = true;
                     }
                     else{
                         castle_black = false;
                     }
 
                     //castle white
-                    if(piece == 'king' && first_color == 'w' && first_co == "0,4"){
+                    if(!new_castle_white && piece == 'king' && first_color == 'w' && first_co == "0,4"){
                         let [x,y] = first_co.split(',').map(Number);
                         const currentButton = document.querySelector(`button[class$="${"0,5"}"]`);
                         const currentButton_1 = document.querySelector(`button[class$="${"0,6"}"]`);
@@ -640,6 +641,7 @@
                             currentButton_1.innerHTML = '<div style="height: 25px; width: 25px; opacity: 0.75; background-color: #bbb; border-radius: 50%; display: inline-block;"></div>';
                         }
                         castle_white = true;
+                        new_castle_black = true;
                     }
                     else{
                         castle_white = false;
@@ -727,7 +729,7 @@
                         var first_color = first_id.split('-')[0]
                         var second_color = second_id.split('-')[0];
 
-                        if (!castleExecuted_white && castle_black && second_co == "7,6") {
+                        if (!castleExecuted_black && castle_black && second_co == "7,6") {
                             let currentButton = document.querySelector(`button[class$="${"7,4"}"]`);
                             let currentButton_0 = document.querySelector(`button[class$="${"7,5"}"]`);
                             let currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
@@ -754,8 +756,8 @@
                             //secondClick.id = firstClick.id;
                             //secondClick.innerHTML = firstClick.innerHTML;
                             currentButton.innerHTML = null;
-                            new_castle_white = false;
-                            castleExecuted_white = true;
+                            new_castle_black = false;
+                            castleExecuted_black = true;
                             firstClick = null;
                             num_piece = num_piece.slice(0, initialNumPieceLength);
                             elem = elem.slice(0, initialNumPieceLength);
