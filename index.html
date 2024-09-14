@@ -216,13 +216,22 @@
         var elem_id = []
         var white_pawns = ['1,0', '1,1', '1,2', '1,3', '1,4', '1,5', '1,6', '1,7']
         var black_pawns = ['6,0', '6,1', '6,2', '6,3', '6,4', '6,5', '6,6', '6,7']
+
+        var en_white = ['3,0', '3,1', '3,2', '3,3', '3,4', '3,5', '3,6', '3,7']
+        var en_black = ['4,0', '4,1', '4,2', '4,3', '4,4', '4,5', '4,6', '4,7']
         let initialNumPieceLength = 0;
+
         let castle_black = false;
         let castle_white = false;
         let new_castle_white = false;
-        let castleExecuted_white = false; 
+        let castleExecuted_white = false;
         let new_castle_black = false;
-        let castleExecuted_black = false; 
+        let castleExecuted_black = false;
+
+        let en_pas_white = false;
+        let en_pas_black = false;
+
+        let queen_castle_black = false;
 
         buttons.forEach(button => {
             button.onclick = function () {
@@ -233,6 +242,76 @@
                     var first_color = first_id.split('-')[0]
                     var piece = first_id.split('-')[1]
                     //piece algo 
+
+                    //en-pasant-black
+                    if (piece == 'p' && first_color == 'b') {
+                        let [x, y] = first_co.split(',');
+                        x = parseInt(x);
+                        y = parseInt(y);
+                        y = y - 1
+                        let new_co = x + ',' + y
+                        y = y + 1
+                        y = y + 1
+                        let new_co_0 = x + ',' + y
+                        let temp_co = document.querySelector(`button[class$="${new_co}"]`);
+                        let temp_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                        if (en_white.includes(new_co) && temp_co.id) {
+                            let [x, y] = new_co.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x - 1;
+                            new_co = x + ',' + y;
+                            new_co = document.querySelector(`button[class$="${new_co}"]`);
+                            new_co.innerHTML += '<div style="height: 40px; width: 40px; opacity: 0.85 ;border: 10px solid #bbb; border-radius:50px;display: flex; z-index: 100; position: absolute;"></div>';
+                            en_pas_black = true;
+                        }
+                        if (en_white.includes(new_co_0) && temp_co_0.id) {
+                            let [x, y] = new_co_0.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x - 1;
+                            new_co_0 = x + ',' + y;
+                            new_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                            new_co_0.innerHTML += '<div style="height: 40px; width: 40px; opacity: 0.85 ;border: 10px solid #bbb; border-radius:50px;display: flex; z-index: 100; position: absolute;"></div>';
+                            en_pas_black = true;
+                        }
+                    }
+
+                    //en-pasant-white
+                    if (piece == 'p' && first_color == 'w') {
+                        let [x, y] = first_co.split(',');
+                        x = parseInt(x);
+                        y = parseInt(y);
+                        y = y + 1
+                        let new_co = x + ',' + y
+                        y = y - 1
+                        y = y - 1
+                        let new_co_0 = x + ',' + y
+                        let temp_co = document.querySelector(`button[class$="${new_co}"]`);
+                        let temp_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                        if (en_black.includes(new_co) && temp_co.id) {
+                            let [x, y] = new_co.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x + 1;
+                            new_co = x + ',' + y;
+                            new_co = document.querySelector(`button[class$="${new_co}"]`);
+                            new_co.innerHTML += '<div style="height: 40px; width: 40px; opacity: 0.85 ;border: 10px solid #bbb; border-radius:50px;display: flex; z-index: 100; position: absolute;"></div>';
+                            en_pas_white = true;
+                        }
+                        if (en_black.includes(new_co_0) && temp_co_0.id) {
+                            let [x, y] = new_co_0.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x + 1;
+                            new_co_0 = x + ',' + y;
+                            console.log(new_co_0)
+                            new_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                            new_co_0.innerHTML += '<div style="height: 40px; width: 40px; opacity: 0.85 ;border: 10px solid #bbb; border-radius:50px;display: flex; z-index: 100; position: absolute;"></div>';
+                            en_pas_white = true;
+                        }
+                    }
+
                     //pawn black
                     if (piece == 'p' && first_color == 'b' && !black_pawns.includes(first_co)) {
                         let [x, y] = first_co.split(',');
@@ -269,9 +348,9 @@
                         currentButton_color = currentButton_color.split("-")[0]
                         if (currentButton && currentButton.id) {
                             elem_id.push(currentButton.innerHTML);
-                            elem.push(new_co_1);  
+                            elem.push(new_co_1);
                         }
-                    } 
+                    }
                     //don't change all good                   
                     if (piece == 'p' && first_color == 'b' && black_pawns.includes(first_co)) {
                         let [x, y] = first_co.split(',');
@@ -285,7 +364,7 @@
                         if (currentButton && !currentButton.id) {
                             num_piece.push(new_co_0)
                         }
-                        
+
                         x = x - 1;
                         let new_co_1 = x + ',' + y;
                         currentButton_0 = document.querySelector(`button[class$="${new_co_1}"]`);
@@ -332,9 +411,9 @@
                         currentButton_color = currentButton_color.split("-")[0]
                         if (currentButton && currentButton.id) {
                             elem_id.push(currentButton.innerHTML);
-                            elem.push(new_co_1);  
+                            elem.push(new_co_1);
                         }
-                    } 
+                    }
                     //don't change all good                   
                     if (piece == 'p' && first_color == 'w' && white_pawns.includes(first_co)) {
                         let [x, y] = first_co.split(',');
@@ -348,7 +427,7 @@
                         if (currentButton && !currentButton.id) {
                             num_piece.push(new_co_0)
                         }
-                        
+
                         x = x + 1;
                         let new_co_1 = x + ',' + y;
                         currentButton_0 = document.querySelector(`button[class$="${new_co_1}"]`);
@@ -615,35 +694,53 @@
                             }
                         }
                     }
+                    //castle queen
+                    /* 
+                    if (!queen_castle_black && piece == 'king' && first_color == 'b' && first_co == "7,4") {
+                        let [x, y] = first_co.split(',').map(Number);
+                        const currentButton = document.querySelector(`button[class$="${"7,3"}"]`);
+                        const currentButton_1 = document.querySelector(`button[class$="${"7,2"}"]`);
+                        const currentButton_2 = document.querySelector(`button[class$="${"7,1"}"]`);
+                        const currentButton_3 = document.querySelector(`button[class$="${"7,0"}"]`);
+                        if (!currentButton.id && !currentButton_1.id && currentButton_2.id && currentButton_3.id) {
+                            currentButton_1.innerHTML = '<div style="height: 25px; width: 25px; opacity: 0.75; background-color: #bbb; border-radius: 50%; display: inline-block;"></div>';
+                        }
+                        queen_castle_black  = true;
+                    }
+                    else {
+                        queen_castle_black  = false;
+                   }
+                    */
+
                     //castle black
-                    if(!new_castle_black && piece == 'king' && first_color == 'b' && first_co == "7,4"){
-                        let [x,y] = first_co.split(',').map(Number);
+                    if (!new_castle_black && piece == 'king' && first_color == 'b' && first_co == "7,4") {
+                        let [x, y] = first_co.split(',').map(Number);
                         const currentButton = document.querySelector(`button[class$="${"7,5"}"]`);
                         const currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
                         const currentButton_2 = document.querySelector(`button[class$="${"7,7"}"]`);
-                        if(!currentButton.id && !currentButton_1.id && currentButton_2.id){
+                        if (!currentButton.id && !currentButton_1.id && currentButton_2.id) {
                             currentButton_1.innerHTML = '<div style="height: 25px; width: 25px; opacity: 0.75; background-color: #bbb; border-radius: 50%; display: inline-block;"></div>';
                         }
                         castle_black = true;
                         new_castle_black = true;
                     }
-                    else{
+                    else {
                         castle_black = false;
                     }
 
                     //castle white
-                    if(!new_castle_white && piece == 'king' && first_color == 'w' && first_co == "0,4"){
-                        let [x,y] = first_co.split(',').map(Number);
+                    if (!new_castle_white && piece == 'king' && first_color == 'w' && first_co == "0,4") {
+                        let [x, y] = first_co.split(',').map(Number);
                         const currentButton = document.querySelector(`button[class$="${"0,5"}"]`);
                         const currentButton_1 = document.querySelector(`button[class$="${"0,6"}"]`);
                         const currentButton_2 = document.querySelector(`button[class$="${"0,7"}"]`);
-                        if(!currentButton.id && !currentButton_1.id && currentButton_2.id){
+                        if (!currentButton.id && !currentButton_1.id && currentButton_2.id) {
                             currentButton_1.innerHTML = '<div style="height: 25px; width: 25px; opacity: 0.75; background-color: #bbb; border-radius: 50%; display: inline-block;"></div>';
                         }
                         castle_white = true;
                         new_castle_black = true;
                     }
-                    else{
+                    else {
                         castle_white = false;
                     }
                     //horse-black
@@ -723,89 +820,195 @@
                 } else {
                     var secondClick = button;
                     var second_co = secondClick.getAttribute('class').split(' ')[1];
-                        var second_id = secondClick.id;
-                        var first_co = firstClick.getAttribute('class').split(' ')[1];
-                        var first_id = firstClick.id;
-                        var first_color = first_id.split('-')[0]
-                        var second_color = second_id.split('-')[0];
+                    var second_id = secondClick.id;
+                    var first_co = firstClick.getAttribute('class').split(' ')[1];
+                    var first_id = firstClick.id;
+                    var first_color = first_id.split('-')[0]
+                    var second_color = second_id.split('-')[0];
 
-                        if (!castleExecuted_black && castle_black && second_co == "7,6") {
-                            let currentButton = document.querySelector(`button[class$="${"7,4"}"]`);
-                            let currentButton_0 = document.querySelector(`button[class$="${"7,5"}"]`);
-                            let currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
-                            let currentButton_2 = document.querySelector(`button[class$="${"7,7"}"]`);
-
-                            buttons.forEach(button => {
-                                if (num_piece.some(piece => button.classList.contains(piece))) {
-                                    button.innerHTML = null;
-                                }
-                            });
-                            
-                            const temp = currentButton_2.innerHTML;
-                            currentButton_2.innerHTML = currentButton_0.innerHTML;
-                            currentButton_0.innerHTML = temp;
-                            currentButton_0.id = currentButton_2.id;
-                            currentButton_2.id = '';
-
-                            const temp_1 = currentButton.innerHTML;
-                            currentButton.innerHTML = currentButton_1.innerHTML;
-                            currentButton_1.innerHTML = temp_1;
-                            currentButton_1.id = currentButton.id
-                            currentButton.id = ''
-
-                            //secondClick.id = firstClick.id;
-                            //secondClick.innerHTML = firstClick.innerHTML;
-                            currentButton.innerHTML = null;
-                            new_castle_black = false;
-                            castleExecuted_black = true;
-                            firstClick = null;
-                            num_piece = num_piece.slice(0, initialNumPieceLength);
-                            elem = elem.slice(0, initialNumPieceLength);
-                            elem_id = elem_id.slice(0, initialNumPieceLength);
+                    //en_pas_black
+                    if (en_pas_black && !secondClick.id) {
+                        let [x, y] = first_co.split(',');
+                        x = parseInt(x);
+                        y = parseInt(y);
+                        y = y - 1
+                        let new_co = x + ',' + y
+                        y = y + 1
+                        y = y + 1
+                        let new_co_0 = x + ',' + y
+                        let temp_co = document.querySelector(`button[class$="${new_co}"]`);
+                        let temp_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                        if (en_white.includes(new_co) && temp_co.id) {
+                            let [x, y] = new_co.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x - 1;
+                            new_co = x + ',' + y;
+                            new_co = document.querySelector(`button[class$="${new_co}"]`);
+                            if (secondClick == new_co) {
+                                new_co.innerHTML = firstClick.innerHTML;
+                                new_co.id = firstClick.id;
+                                firstClick.innerHTML = ''
+                                temp_co.innerHTML = ''
+                                firstClick.id = ''
+                                temp_co.id = ''
+                            }
+                            else {
+                                new_co.innerHTML = ''
+                            }
                         }
-                        else if (!castleExecuted_white && castle_white && second_co == "0,6") {
-                            let currentButton = document.querySelector(`button[class$="${"0,4"}"]`);
-                            let currentButton_0 = document.querySelector(`button[class$="${"0,5"}"]`);
-                            let currentButton_1 = document.querySelector(`button[class$="${"0,6"}"]`);
-                            let currentButton_2 = document.querySelector(`button[class$="${"0,7"}"]`);
-
-                            buttons.forEach(button => {
-                                if (num_piece.some(piece => button.classList.contains(piece))) {
-                                    button.innerHTML = null;
-                                }
-                            });
-                            
-                            const temp = currentButton_2.innerHTML;
-                            currentButton_2.innerHTML = currentButton_0.innerHTML;
-                            currentButton_0.innerHTML = temp;
-                            currentButton_0.id = currentButton_2.id;
-                            currentButton_2.id = '';
-
-                            const temp_1 = currentButton.innerHTML;
-                            currentButton.innerHTML = currentButton_1.innerHTML;
-                            currentButton_1.innerHTML = temp_1;
-                            currentButton_1.id = currentButton.id
-                            currentButton.id = ''
-
-                            //secondClick.id = firstClick.id;
-                            //secondClick.innerHTML = firstClick.innerHTML;
-                            currentButton.innerHTML = null;
-                            new_castle_white = false;
-                            castleExecuted_white = true;
-                            firstClick = null;
-                            num_piece = num_piece.slice(0, initialNumPieceLength);
-                            elem = elem.slice(0, initialNumPieceLength);
-                            elem_id = elem_id.slice(0, initialNumPieceLength);
+                        if (en_white.includes(new_co_0) && temp_co_0.id) {
+                            let [x, y] = new_co_0.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x - 1;
+                            new_co_0 = x + ',' + y; 
+                            new_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                            if (secondClick == new_co_0) {
+                                new_co_0.innerHTML = firstClick.innerHTML;
+                                new_co_0.id = firstClick.id;
+                                firstClick.innerHTML = ''
+                                temp_co_0.innerHTML = ''
+                                firstClick.id = ''
+                                temp_co_0.id = ''
+                            }
+                            else {
+                                new_co_0.innerHTML = ''
+                            }
                         }
-                    else if (num_piece.some(piece => button.classList.contains(piece)) || elem.some(piece => button.classList.contains(piece))) {         
+                    }
+
+                    //en-pasant-white
+                    if (en_pas_white && !secondClick.id) {
+                        let [x, y] = first_co.split(',');
+                        x = parseInt(x);
+                        y = parseInt(y);
+                        y = y + 1
+                        let new_co = x + ',' + y
+                        y = y - 1
+                        y = y - 1
+                        let new_co_0 = x + ',' + y
+                        let temp_co = document.querySelector(`button[class$="${new_co}"]`);
+                        let temp_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                        if (en_black.includes(new_co) && temp_co.id) {
+                            let [x, y] = new_co.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x + 1;
+                            new_co = x + ',' + y;
+                            new_co = document.querySelector(`button[class$="${new_co}"]`);
+                            if (secondClick == new_co) {
+                                new_co.innerHTML = firstClick.innerHTML;
+                                new_co.id = firstClick.id;
+                                firstClick.innerHTML = ''
+                                temp_co.innerHTML = ''
+                                firstClick.id = ''
+                                temp_co.id = ''
+                            }
+                            else {
+                                new_co.innerHTML = ''
+                            }
+                        }
+                        if (en_black.includes(new_co_0) && temp_co_0.id) {
+                            let [x, y] = new_co_0.split(',');
+                            x = parseInt(x);
+                            y = parseInt(y);
+                            x = x + 1;
+                            new_co_0 = x + ',' + y;
+                            new_co_0 = document.querySelector(`button[class$="${new_co_0}"]`);
+                            if (secondClick == new_co_0) {
+                                new_co_0.innerHTML = firstClick.innerHTML;
+                                new_co_0.id = firstClick.id;
+                                firstClick.innerHTML = ''
+                                temp_co_0.innerHTML = ''
+                                firstClick.id = ''
+                                temp_co_0.id = ''
+                            }
+                            else {
+                                new_co_0.innerHTML = ''
+                            }
+                        }
+                    }
+
+
+
+                    if (!castleExecuted_black && castle_black && second_co == "7,6") {
+                        let currentButton = document.querySelector(`button[class$="${"7,4"}"]`);
+                        let currentButton_0 = document.querySelector(`button[class$="${"7,5"}"]`);
+                        let currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
+                        let currentButton_2 = document.querySelector(`button[class$="${"7,7"}"]`);
+
+                        buttons.forEach(button => {
+                            if (num_piece.some(piece => button.classList.contains(piece))) {
+                                button.innerHTML = null;
+                            }
+                        });
+
+                        const temp = currentButton_2.innerHTML;
+                        currentButton_2.innerHTML = currentButton_0.innerHTML;
+                        currentButton_0.innerHTML = temp;
+                        currentButton_0.id = currentButton_2.id;
+                        currentButton_2.id = '';
+
+                        const temp_1 = currentButton.innerHTML;
+                        currentButton.innerHTML = currentButton_1.innerHTML;
+                        currentButton_1.innerHTML = temp_1;
+                        currentButton_1.id = currentButton.id
+                        currentButton.id = ''
+
+                        //secondClick.id = firstClick.id;
+                        //secondClick.innerHTML = firstClick.innerHTML;
+                        currentButton.innerHTML = null;
+                        new_castle_black = false;
+                        castleExecuted_black = true;
+                        firstClick = null;
+                        num_piece = num_piece.slice(0, initialNumPieceLength);
+                        elem = elem.slice(0, initialNumPieceLength);
+                        elem_id = elem_id.slice(0, initialNumPieceLength);
+                    }
+                    else if (!castleExecuted_white && castle_white && second_co == "0,6") {
+                        let currentButton = document.querySelector(`button[class$="${"0,4"}"]`);
+                        let currentButton_0 = document.querySelector(`button[class$="${"0,5"}"]`);
+                        let currentButton_1 = document.querySelector(`button[class$="${"0,6"}"]`);
+                        let currentButton_2 = document.querySelector(`button[class$="${"0,7"}"]`);
+
+                        buttons.forEach(button => {
+                            if (num_piece.some(piece => button.classList.contains(piece))) {
+                                button.innerHTML = null;
+                            }
+                        });
+
+                        const temp = currentButton_2.innerHTML;
+                        currentButton_2.innerHTML = currentButton_0.innerHTML;
+                        currentButton_0.innerHTML = temp;
+                        currentButton_0.id = currentButton_2.id;
+                        currentButton_2.id = '';
+
+                        const temp_1 = currentButton.innerHTML;
+                        currentButton.innerHTML = currentButton_1.innerHTML;
+                        currentButton_1.innerHTML = temp_1;
+                        currentButton_1.id = currentButton.id
+                        currentButton.id = ''
+
+                        //secondClick.id = firstClick.id;
+                        //secondClick.innerHTML = firstClick.innerHTML;
+                        currentButton.innerHTML = null;
+                        new_castle_white = false;
+                        castleExecuted_white = true;
+                        firstClick = null;
+                        num_piece = num_piece.slice(0, initialNumPieceLength);
+                        elem = elem.slice(0, initialNumPieceLength);
+                        elem_id = elem_id.slice(0, initialNumPieceLength);
+                    }
+                    else if (num_piece.some(piece => button.classList.contains(piece)) || elem.some(piece => button.classList.contains(piece))) {
                         if (num_piece.some(piece => button.classList.contains(piece)) && firstClick.id != secondClick.id && first_color != second_color) {
                             buttons.forEach(button => {
                                 if (num_piece.some(piece => button.classList.contains(piece)) && second_color != first_color) {
                                     button.innerHTML = null;
                                 }
-                                if(castle_black){
+                                if (castle_black) {
                                     const currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
-                                    currentButton_1.innerHTML = null; 
+                                    currentButton_1.innerHTML = null;
                                 }
                             });
                         }
@@ -834,18 +1037,22 @@
                     }
                     else {
                         buttons.forEach(button => {
-                            if(!new_castle_white || !new_castle_black){
-                            if (num_piece.some(piece => button.classList.contains(piece)) || num_piece.includes(piece)) {
-                                button.innerHTML = null;
+                            if (!new_castle_white || !new_castle_black) {
+                                if (num_piece.some(piece => button.classList.contains(piece)) || num_piece.includes(piece)) {
+                                    button.innerHTML = null;
+                                }
                             }
-                            }
-                            if(castle_black){
+                            if (castle_black) {
                                 const currentButton_1 = document.querySelector(`button[class$="${"7,6"}"]`);
-                                currentButton_1.innerHTML = null; 
+                                if(!currentButton_1.id){
+                                    currentButton_1.innerHTML = null;
+                                }
                             }
-                            if(castle_white){
+                            if (castle_white) {
                                 const currentButton_1 = document.querySelector(`button[class$="${"0,6"}"]`);
-                                currentButton_1.innerHTML = null; 
+                                if(!currentButton_1.id){
+                                    currentButton_1.innerHTML = null;
+                                }
                             }
                         });
                         buttons.forEach(button => {
