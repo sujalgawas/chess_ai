@@ -138,59 +138,70 @@
 
     <script>
         // Function to calculate scores
-function calculateScores() {
+        function calculateScores() {
     const buttons = document.querySelectorAll('.boxes-green, .boxes-white');
     const pieceValues = {
         'p': 1,
         'rook': 5,
         'bishop': 3,
         'knight': 3,
-        'queen': 9
+        'queen': 9,
     };
 
     let score_w = 0;
     let score_b = 0;
-    let i = 0;
+    const results = [];
 
     // Using while loop instead of forEach
+    let i = 0;
     while (i < buttons.length) {
-        const [color, piece] = buttons[i].id.split('-'); // Extract color and piece from id
-        const pieceValue = pieceValues[piece] || 0; // Get the value for the piece, default to 0
-
+        let score_w = 0;
+        let score_b = 0;
+        let [color, piece] = buttons[i].id.split('-'); // Extract color and piece from id
+        let pieceValue = pieceValues[piece] || 0;
         if (color === 'w') {
-            score_w += pieceValue;
+            score_w = pieceValue; // Increment score_w
         } else if (color === 'b') {
-            score_b += pieceValue;
+            score_b = pieceValue; // Increment score_b
         }
+
+        // Add the class of the button and the corresponding score to the array
+        const temp = buttons[i].className.split(" ")[1];
+        const temp2 = piece;
+        results.push({
+            cordinate: temp,
+            piece : temp2,
+            score_w: score_w,
+            score_b: score_b
+        });
         i++;
     }
-    return { score_w, score_b };
+    return results;          
 }
 
-    // Async function to send data
-    async function sendScores(score_w, score_b) {
-        try {
-            const response = await fetch('/process', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ score_w, score_b }),
-            });
+// Async function to send data
+async function sendScores(results) {
+    try {
+        const response = await fetch('/process', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ results }),
+        });
 
-            const data = await response.json();
-            console.log('Response:', data);
-        } catch (error) {
-            console.error('Error:', error);
-        }
+        const data = await response.json();
+        console.log('Response:', data);
+    } catch (error) {
+        console.error('Error:', error);
     }
+}
 
-    // Main function to parallelize the score calculation and fetch
-    async function processScores() {
-        const { score_w, score_b } = calculateScores();
-        // Asynchronously send the scores
-        await sendScores(score_w, score_b);
-    }
+async function processScores() {
+    const results = calculateScores(); // Correctly call calculateScores
+    await sendScores(results);
+}
+
         function addPieceImages() {
             // White pieces
             const whitePieces = {
@@ -289,8 +300,6 @@ function calculateScores() {
 
         buttons.forEach(button => {
             button.onclick = function () {
-                // Run the main function
-                processScores();
                 if (!firstClick) {
                     firstClick = button;
                     var first_co = firstClick.getAttribute('class').split(' ')[1];
@@ -1017,6 +1026,8 @@ function calculateScores() {
                         num_piece = num_piece.slice(0, initialNumPieceLength);
                         elem = elem.slice(0, initialNumPieceLength);
                         elem_id = elem_id.slice(0, initialNumPieceLength);
+                        // Run the main function
+                        processScores();
                     }
                     else if (!castleExecuted_white && castle_white && second_co == "0,6") {
                         let currentButton = document.querySelector(`button[class$="${"0,4"}"]`);
@@ -1053,8 +1064,6 @@ function calculateScores() {
                         elem_id = elem_id.slice(0, initialNumPieceLength);
                     }
                     else if (num_piece.some(piece => button.classList.contains(piece)) || elem.some(piece => button.classList.contains(piece))) {
-                        // Run the main function
-                        processScores();
                         if (num_piece.some(piece => button.classList.contains(piece)) && firstClick.id != secondClick.id && first_color != second_color) {
                             buttons.forEach(button => {
                                 if (num_piece.some(piece => button.classList.contains(piece)) && second_color != first_color) {
@@ -1088,6 +1097,8 @@ function calculateScores() {
                         num_piece = num_piece.slice(0, initialNumPieceLength);
                         elem = elem.slice(0, initialNumPieceLength);
                         elem_id = elem_id.slice(0, initialNumPieceLength);
+                        // Run the main function
+                        processScores();
                     }
                     else {
                         buttons.forEach(button => {
